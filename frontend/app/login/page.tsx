@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react';
 
 // Logo component - larger version for login/signup pages
 const SoundTabLogo = ({ className }: { className?: string }) => (
@@ -124,6 +125,19 @@ export default function NewLoginPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-stone-50 to-white flex flex-col relative overflow-hidden">
       <MusicNotationBackground />
+      
+      {/* Back to Home Button */}
+      <div className="absolute top-6 left-6 z-20">
+        <Link href="/">
+          <motion.button
+            className="flex items-center space-x-2 text-gray-600 hover:text-amber-800 transition-colors bg-white/50 backdrop-blur-sm px-4 py-2 rounded-lg hover:bg-white/80 border border-transparent hover:border-amber-200"
+            whileHover={{ x: -3 }}
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span className="font-medium">Back to Home</span>
+          </motion.button>
+        </Link>
+      </div>
       
       <main className="flex-grow flex items-center justify-center p-6 z-10">
         <motion.div 

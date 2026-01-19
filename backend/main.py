@@ -30,13 +30,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- Warm-up Function ---
 @app.on_event("startup")
 async def warmup_audio_processing():
-    """
-    Run a dummy audio processing task on startup to load Librosa/NumPy models 
-    and trigger Numba JIT compilation. This reduces latency for the first user request.
-    """
     print("WARM-UP: Initializing audio processing libraries...")
     try:
         # Generate 1 second of silence/dummy audio
@@ -235,7 +230,6 @@ def estimate_tempo_and_meter(tab_data):
     return tempo, (4, 4)
 
 def generate_pdf_tablature(tab_data, output_path, tempo):
-    """Generate a professional PDF tablature using reportlab"""
     print("Generating PDF...")
     c = canvas.Canvas(output_path, pagesize=landscape(letter))
     width, height = landscape(letter)

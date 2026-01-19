@@ -1,9 +1,9 @@
 'use client';
 import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
-// Updated Icons
 const MusicNoteIcon = ({ className }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
     <path d="M9 18V5l12-2v13"/>
@@ -12,7 +12,6 @@ const MusicNoteIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-// Tab Notation Icon
 const TabNotationIcon = ({ className }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
     <path d="M3 5h18"/> {/* Top string */}
@@ -33,7 +32,6 @@ const DownloadIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-// Music notation background component (client-only, subtle design)
 const MusicNotationBackground = dynamic(() => Promise.resolve(() => {
   return (
     <div className="absolute inset-0 z-0 opacity-10 pointer-events-none overflow-hidden">
@@ -64,7 +62,6 @@ const MusicNotationBackground = dynamic(() => Promise.resolve(() => {
   );
 }), { ssr: false });
 
-// Progress visualization component (client-only)
 const ProcessingVisualizer = dynamic(() => Promise.resolve(() => {
   const [waveform, setWaveform] = useState<number[]>([]);
 
@@ -99,7 +96,6 @@ const ProcessingVisualizer = dynamic(() => Promise.resolve(() => {
   );
 }), { ssr: false });
 
-// Tab preview component (client-only)
 const TabPreview = dynamic(() => Promise.resolve(() => {
   return (
     <div className="w-full bg-stone-50 rounded-lg p-3 border border-stone-200 shadow-inner overflow-hidden">
@@ -149,8 +145,6 @@ export default function Home() {
     
     const startTime = Date.now();
 
-    // Simulate progress while uploading/processing
-    // Paced to reach 90% in approx 25 seconds (avg 0.75% per 200ms)
     const interval = setInterval(() => {
       setProcessingProgress(prev => {
         if (prev >= 90) return prev; // Hold at 90%
@@ -244,23 +238,43 @@ export default function Home() {
             <p className="text-xs text-gray-500">Audio to Guitar Tablature Converter</p>
           </div>
         </motion.div>
-        <nav className="flex space-x-6">
-          {['Home', 'How it Works', 'Examples', 'FAQ'].map((item, index) => (
-            <motion.a
-              key={item}
-              href="#"
-              className="text-sm font-medium text-gray-600 hover:text-amber-800 hover:bg-amber-50 px-3 py-2 rounded-md transition-all"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
-              whileHover={{ y: -2 }}
-            >
-              {item}
-            </motion.a>
-          ))}
+        <nav className="flex items-center space-x-6">
+          <div className="hidden md:flex space-x-6">
+            {['Home', 'How it Works', 'Examples', 'FAQ'].map((item, index) => (
+              <motion.a
+                key={item}
+                href="#"
+                className="text-sm font-medium text-gray-600 hover:text-amber-800 hover:bg-amber-50 px-3 py-2 rounded-md transition-all"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+                whileHover={{ y: -2 }}
+              >
+                {item}
+              </motion.a>
+            ))}
+          </div>
+          <div className="flex items-center space-x-3 border-l border-amber-100 pl-6">
+            <Link href="/login">
+              <motion.button
+                className="text-sm font-medium text-gray-600 hover:text-amber-800 px-3 py-2 rounded-md transition-all"
+                whileHover={{ y: -2 }}
+              >
+                Log In
+              </motion.button>
+            </Link>
+            <Link href="/signup">
+              <motion.button
+                className="text-sm font-medium bg-amber-800 text-white px-4 py-2 rounded-lg hover:bg-amber-900 transition-all shadow-sm"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Sign Up
+              </motion.button>
+            </Link>
+          </div>
         </nav>
       </header>
-      {/* Main Content */}
       <main className="relative flex-grow flex items-center justify-center p-6 z-10">
         <motion.div 
           className="max-w-2xl w-full space-y-8"
@@ -268,10 +282,8 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          {/* Transform Audio into Guitar Tabs Block */}
           <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl overflow-hidden p-6">
             <div className="space-y-6">
-              {/* Hero section */}
               <div className="text-center space-y-4">
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-800">Transform Audio into Guitar Tabs</h1>
                 <p className="text-gray-600 max-w-lg mx-auto">
@@ -279,7 +291,6 @@ export default function Home() {
                   easy-to-read guitar tablature in seconds.
                 </p>
               </div>
-              {/* File upload area */}
               <div 
                 className={`border-2 border-dashed rounded-xl p-6 transition-all ${
                   selectedFile ? 'border-amber-300 bg-amber-50' : 'border-gray-300 hover:border-amber-300'
@@ -358,7 +369,6 @@ export default function Home() {
                   )}
                 </AnimatePresence>
               </div>
-              {/* Processing state */}
               <AnimatePresence>
                 {isProcessing && (
                   <motion.div
@@ -389,7 +399,6 @@ export default function Home() {
                   </motion.div>
                 )}
               </AnimatePresence>
-              {/* Result state */}
               <AnimatePresence>
                 {processingComplete && (
                   <motion.div
@@ -438,7 +447,6 @@ export default function Home() {
               </AnimatePresence>
             </div>
           </div>
-          {/* Features Block */}
           <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl p-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
