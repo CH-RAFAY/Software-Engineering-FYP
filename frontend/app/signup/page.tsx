@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 // Logo component - larger version for login/signup pages
-const SoundTabLogo = ({ className }) => (
+const SoundTabLogo = ({ className }: { className?: string }) => (
   <div className={`flex items-center ${className}`}>
     <div className="w-20 h-20 bg-amber-800 text-white rounded-full flex items-center justify-center">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
@@ -22,17 +22,28 @@ const SoundTabLogo = ({ className }) => (
 );
 
 // Music notation background component
+interface Note {
+  top: string;
+  left: string;
+  rotation: number;
+}
+
 const MusicNotationBackground = () => {
-  const [notes, setNotes] = useState([]);
+  const [notes, setNotes] = useState<Note[]>([]);
 
   useEffect(() => {
     // Generate random positions and rotations only on the client side
-    const generatedNotes = Array.from({ length: 20 }).map(() => ({
-      top: `${Math.random() * 100}%`,
-      left: `${Math.random() * 100}%`,
-      rotation: Math.random() * 360,
-    }));
-    setNotes(generatedNotes);
+    // Use setTimeout to avoid synchronous state update in effect warning
+    const timer = setTimeout(() => {
+      const generatedNotes = Array.from({ length: 20 }).map(() => ({
+        top: `${Math.random() * 100}%`,
+        left: `${Math.random() * 100}%`,
+        rotation: Math.random() * 360,
+      }));
+      setNotes(generatedNotes);
+    }, 0);
+    
+    return () => clearTimeout(timer);
   }, []); // Empty dependency array ensures this runs only once on mount
 
   return (
@@ -90,7 +101,7 @@ export default function SignupPage() {
     return true;
   };
 
-  const handleSignup = async (e) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!validatePassword()) {
@@ -122,7 +133,11 @@ export default function SignupPage() {
       router.push('/');
     } catch (error) {
       console.error(error);
-      alert(error.message);
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert('Signup failed');
+      }
     } finally {
       setIsLoading(false);
     }

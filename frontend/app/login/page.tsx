@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 // Logo component - larger version for login/signup pages
-const SoundTabLogo = ({ className }) => (
+const SoundTabLogo = ({ className }: { className?: string }) => (
   <div className={`flex items-center ${className}`}>
     <div className="w-20 h-20 bg-amber-800 text-white rounded-full flex items-center justify-center">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
@@ -22,19 +22,32 @@ const SoundTabLogo = ({ className }) => (
 );
 
 // Music notation background component
+interface Note {
+  id: string;
+  top: string;
+  left: string;
+  transform: string;
+  opacity: number;
+}
+
 const MusicNotationBackground = () => {
-  const [notes, setNotes] = useState([]);
+  const [notes, setNotes] = useState<Note[]>([]);
 
   useEffect(() => {
     // Generate random notes only on the client-side
-    const generatedNotes = Array.from({ length: 20 }).map((_, i) => ({
-      id: `note-${i}`,
-      top: `${Math.random() * 100}%`,
-      left: `${Math.random() * 100}%`,
-      transform: `rotate(${Math.random() * 360}deg)`,
-      opacity: 0.5,
-    }));
-    setNotes(generatedNotes);
+    // Use setTimeout to avoid synchronous state update in effect warning
+    const timer = setTimeout(() => {
+      const generatedNotes = Array.from({ length: 20 }).map((_, i) => ({
+        id: `note-${i}`,
+        top: `${Math.random() * 100}%`,
+        left: `${Math.random() * 100}%`,
+        transform: `rotate(${Math.random() * 360}deg)`,
+        opacity: 0.5,
+      }));
+      setNotes(generatedNotes);
+    }, 0);
+    
+    return () => clearTimeout(timer);
   }, []); // Empty dependency array ensures this runs once on mount
 
   return (
@@ -76,7 +89,7 @@ export default function NewLoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const handleLogin = async (e) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
@@ -250,7 +263,7 @@ export default function NewLoginPage() {
           {/* Sign Up Link */}
           <div className="text-center mt-4">
             <p className="text-sm text-gray-600">
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <Link href="/signup" className="font-medium text-amber-800 hover:text-amber-900">
                 Sign up now
               </Link>
