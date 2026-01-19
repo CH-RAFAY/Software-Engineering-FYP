@@ -30,6 +30,27 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# --- Warm-up Function ---
+@app.on_event("startup")
+async def warmup_audio_processing():
+    """
+    Run a dummy audio processing task on startup to load Librosa/NumPy models 
+    and trigger Numba JIT compilation. This reduces latency for the first user request.
+    """
+    print("WARM-UP: Initializing audio processing libraries...")
+    try:
+        # Generate 1 second of silence/dummy audio
+        sr = 22050
+        y = np.zeros(sr) 
+        
+        # Trigger librosa functions to load them into memory
+        librosa.onset.onset_strength(y=y, sr=sr)
+        librosa.piptrack(y=y, sr=sr)
+        
+        print("WARM-UP: Audio libraries ready.")
+    except Exception as e:
+        print(f"WARM-UP WARNING: {e}")
+
 # --- Audio Processing Functions ---
 
 def load_and_standardize_audio(file_path):

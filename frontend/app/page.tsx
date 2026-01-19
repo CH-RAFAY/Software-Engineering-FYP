@@ -126,11 +126,11 @@ const TabPreview = dynamic(() => Promise.resolve(() => {
   );
 }), { ssr: false });
 
-export default function HomePage() {
+export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [processingComplete, setProcessingComplete] = useState(false);
   const [processingProgress, setProcessingProgress] = useState(0);
+  const [processingComplete, setProcessingComplete] = useState(false);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -147,13 +147,16 @@ export default function HomePage() {
     setIsProcessing(true);
     setProcessingProgress(0);
     
+    const startTime = Date.now();
+
     // Simulate progress while uploading/processing
+    // Paced to reach 90% in approx 25 seconds (avg 0.75% per 200ms)
     const interval = setInterval(() => {
       setProcessingProgress(prev => {
         if (prev >= 90) return prev; // Hold at 90%
-        return prev + Math.random() * 5;
+        return prev + Math.random() * 1.5;
       });
-    }, 300);
+    }, 200);
 
     try {
         const formData = new FormData();
@@ -170,6 +173,14 @@ export default function HomePage() {
         }
 
         const blob = await response.blob();
+        
+        // Ensure animation runs for at least 20 seconds for better UX
+        const elapsedTime = Date.now() - startTime;
+        const minTime = 20000; // 20 seconds
+        if (elapsedTime < minTime) {
+            await new Promise(resolve => setTimeout(resolve, minTime - elapsedTime));
+        }
+
         const url = window.URL.createObjectURL(blob);
         setPdfUrl(url);
         
