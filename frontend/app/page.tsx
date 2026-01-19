@@ -14,13 +14,13 @@ const MusicNoteIcon = ({ className }: { className?: string }) => (
 
 const TabNotationIcon = ({ className }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-    <path d="M3 5h18"/> {/* Top string */}
-    <path d="M3 9h18"/> {/* Second string */}
-    <path d="M3 13h18"/> {/* Third string */}
-    <path d="M3 17h18"/> {/* Bottom string */}
-    <circle cx="6" cy="5" r="1.5"/> {/* Note on first string */}
-    <path d="M10 9h4"/> {/* Bar across second string */}
-    <text x="17" y="15" fontSize="6" fill="currentColor">5</text> {/* Number on third string */}
+    <path d="M3 5h18"/> {}
+    <path d="M3 9h18"/> {}
+    <path d="M3 13h18"/> {}
+    <path d="M3 17h18"/> {}
+    <circle cx="6" cy="5" r="1.5"/> {}
+    <path d="M10 9h4"/> {}
+    <text x="17" y="15" fontSize="6" fill="currentColor">5</text> {}
   </svg>
 );
 
