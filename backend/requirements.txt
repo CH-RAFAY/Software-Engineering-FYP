@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+python-multipart
+librosa
+numpy
+scipy
+reportlab
+music21
+python-jose[cryptography]
+passlib[bcrypt]
+sqlalchemy
+bcrypt==3.2.0
+email-validator
